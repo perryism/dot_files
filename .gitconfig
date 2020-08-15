@@ -1,0 +1,21 @@
+[alias]
+	co = checkout
+	ci = commit
+	st = status
+	br = branch
+	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+	type = cat-file -t
+	dump = cat-file -p
+	fp   = push --force-with-lease
+	sco = !git branch -a | grep -v remotes | grep $2 | xargs git checkout
+	pick = !git co $(git branch | cut -c 3- | pick)
+	rpick = !git co $(git branch -r | cut -c 3- | sed \"s/^origin\\///\" | pick)
+	showpick = !git show $(git slog | pick | cut -d' ' -f1)
+	stashpeek = !git stash show $(git stash list | pick | cut -d\":\" -f1) -p
+	stashapply = !git stash apply $(git stash list | pick | cut -d\":\" -f1)
+	del = !git branch -D $(git branch --merged | cut -c 3- | pick)
+	amend = commit --amend -C HEAD
+	head = rev-parse --short head
+	slog = log --pretty=oneline
+	rbc = rebase --continue
+	s = !git show $(git log --oneline | pick | cut -d' ' -f 1)
