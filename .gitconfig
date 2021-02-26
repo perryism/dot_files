@@ -10,6 +10,7 @@
 	sco = !git branch -a | grep -v remotes | grep $2 | xargs git checkout
 	pick = !git co $(git branch | cut -c 3- | pick)
 	rpick = !git co $(git branch -r | cut -c 3- | sed \"s/^origin\\///\" | pick)
+	spick =  !git show $(git slog | pick | cut -d' ' -f1)
 	showpick = !git show $(git slog | pick | cut -d' ' -f1)
 	stashpeek = !git stash show $(git stash list | pick | cut -d\":\" -f1) -p
 	stashapply = !git stash apply $(git stash list | pick | cut -d\":\" -f1)
