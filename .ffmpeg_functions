@@ -1,0 +1,57 @@
+function clip() {
+  duration=$(echo $(to_sec $3)-$(to_sec $2) | bc)
+  ffmpeg -ss $(to_sec $2) -i $1 -t $duration -strict -2 $4
+}
+
+function to_sec() {
+   echo $1 | awk -F'[:;]' '{ print ($1 * 3600) + ($2 * 60) + $3 }'
+}
+
+function ffmpeg_rotate {
+   # 1 90 CW, 2 90 CCW, 3 90 
+   ffmpeg -i $1 -vf "transpose=$3" $2
+}
+
+# ffmpeg
+function ffmpeg_reverse {
+    ffmpeg -i $1  -vf reverse -af areverse $2
+}
+
+function ffmpeg_gif {
+    fps=${fps-5}
+    scale=${scale-320}
+    ffmpeg -y -ss $2 -t $3 -i $1 -vf fps=$fps,scale=$scale:-1:flags=lanczos,palettegen /tmp/palette.png
+    ffmpeg -ss $2 -t $3 -i $1 -i /tmp/palette.png -filter_complex "fps=$fps,scale=$scale:-1:flags=lanczos[x];[x][1:v]paletteuse" $4
+}
+
+function ffmpeg_list {
+    ls $1 | perl -ne 'print "file $_"' > $2
+}
+
+function ffmpeg_concat {
+    ffmpeg -f concat -i $1 -c copy $2
+}
+
+function flist() {
+    read foo
+    echo $foo | xargs -n 1 | awk '{print "file "$0}'
+}
+
+function ffconcat() {
+    ls $1*.mp4 | xargs | flist > $1.txt
+    ffmpeg_concat $1.txt $1.mp4
+}
+
+function ffmpeg_snapshot { mkdir -p $(basename "$1" .mp4)
+    ffmpeg -i $1 -vf fps=$2 $(basename "$1" .mp4)/out%04d.png
+}
+
+function ffmpeg_bright {
+    ffmpeg -i $1 -vf eq=contrast=${contrast:1}:brightness=${3}:saturation=${saturation-2} -c:a copy $2
+}
+
+function ffmpeg_crop {
+    ffmpeg -i $1 -filter:v "crop=$3:$4:$5:$6" $2
+}
+
+alias ffmeta='ffprobe -v error -show_format -show_streams'
