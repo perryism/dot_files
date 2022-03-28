@@ -20,3 +20,4 @@
 	slog = log --pretty=oneline
 	rbc = rebase --continue
 	s = !git show $(git log --oneline $1 -- | pick | cut -d' ' -f 1)
+	cp = !git cherry-pick $(git slog $1 | pick | cut -d' ' -f1)
