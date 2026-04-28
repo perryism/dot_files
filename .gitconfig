@@ -1,3 +1,6 @@
+[pull]
+	ff = only
+
 [alias]
 	co = checkout
 	ci = commit
@@ -21,3 +24,12 @@
 	rbc = rebase --continue
 	s = !git show $(git log --oneline $1 -- | pick | cut -d' ' -f 1)
 	cp = !git cherry-pick $(git slog $1 | pick | cut -d' ' -f1)
+	lg1 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all
+	lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(auto)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)'
+	lg = lg1
+	ltags = for-each-ref --sort=-creatordate --format="%(refname:short) %(creatordate:short)" refs/tags
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
